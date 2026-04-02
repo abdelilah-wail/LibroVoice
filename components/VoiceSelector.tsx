@@ -1,64 +1,95 @@
 'use client';
 
 import React from 'react';
+import { voiceCategories, voiceOptions } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-import { voiceOptions, voiceCategories } from '@/lib/constants';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import { VoiceSelectorProps } from '@/types';
 
 const VoiceSelector = ({ value, onChange, disabled, className }: VoiceSelectorProps) => {
-    const groups = [
-        { label: 'Male Voices', keys: voiceCategories.male },
-        { label: 'Female Voices', keys: voiceCategories.female },
-    ];
-
     return (
-        <div className={cn('space-y-5', className)}>
-            {groups.map((group) => (
-                <div key={group.label}>
-                    <p className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-widest mb-3">
-                        {group.label}
-                    </p>
-                    <div className="voice-selector-options flex-wrap">
-                        {group.keys.map((key) => {
-                            const voice = voiceOptions[key as keyof typeof voiceOptions];
-                            const isSelected = value === voice.id;
-
+        <div className={cn('space-y-6', className)}>
+            <RadioGroup
+                value={value}
+                onValueChange={onChange}
+                disabled={disabled}
+                className="space-y-8"
+            >
+                {/* Male Voices */}
+                <div className="space-y-4">
+                    <h4 className="text-sm font-medium text-[#777]">Male Voices</h4>
+                    <div className="voice-selector-options">
+                        {voiceCategories.male.map((voiceId) => {
+                            const voice = voiceOptions[voiceId as keyof typeof voiceOptions];
+                            const isSelected = value === voiceId;
                             return (
-                                <label
-                                    key={key}
+                                <Label
+                                    key={voiceId}
                                     className={cn(
-                                        'voice-selector-option cursor-pointer select-none',
-                                        isSelected
-                                            ? 'voice-selector-option-selected'
-                                            : 'voice-selector-option-default',
+                                        'voice-selector-option',
+                                        isSelected ? 'voice-selector-option-selected' : 'voice-selector-option-default',
                                         disabled && 'voice-selector-option-disabled'
                                     )}
-                                    htmlFor={`voice-${key}`}
                                 >
-                                    <input
-                                        type="radio"
-                                        id={`voice-${key}`}
-                                        name="voice"
-                                        value={voice.id}
-                                        checked={isSelected}
-                                        disabled={disabled}
-                                        onChange={() => onChange(voice.id)}
-                                        className="sr-only"
-                                    />
-                                    <div className="flex flex-col gap-0.5 min-w-0">
-                                        <span className="font-semibold text-[var(--text-primary)] text-base leading-tight">
-                                            {voice.name}
-                                        </span>
-                                        <span className="text-xs text-[var(--text-secondary)] leading-snug">
+                                    <RadioGroupItem value={voiceId} id={voiceId} className="sr-only" />
+                                    <div className="flex flex-col gap-1">
+                                        <div className="flex items-center gap-2">
+                                            <div className={cn(
+                                                "w-4 h-4 rounded-full border flex items-center justify-center",
+                                                isSelected ? "border-[#663820]" : "border-gray-300"
+                                            )}>
+                                                {isSelected && <div className="w-2 h-2 rounded-full bg-[#663820]" />}
+                                            </div>
+                                            <span className="font-bold text-[#212a3b]">{voice.name}</span>
+                                        </div>
+                                        <p className="text-xs text-[#777] leading-relaxed">
                                             {voice.description}
-                                        </span>
+                                        </p>
                                     </div>
-                                </label>
+                                </Label>
                             );
                         })}
                     </div>
                 </div>
-            ))}
+
+                {/* Female Voices */}
+                <div className="space-y-4">
+                    <h4 className="text-sm font-medium text-[#777]">Female Voices</h4>
+                    <div className="voice-selector-options">
+                        {voiceCategories.female.map((voiceId) => {
+                            const voice = voiceOptions[voiceId as keyof typeof voiceOptions];
+                            const isSelected = value === voiceId;
+                            return (
+                                <Label
+                                    key={voiceId}
+                                    className={cn(
+                                        'voice-selector-option',
+                                        isSelected ? 'voice-selector-option-selected' : 'voice-selector-option-default',
+                                        disabled && 'voice-selector-option-disabled'
+                                    )}
+                                >
+                                    <RadioGroupItem value={voiceId} id={voiceId} className="sr-only" />
+                                    <div className="flex flex-col gap-1">
+                                        <div className="flex items-center gap-2">
+                                            <div className={cn(
+                                                "w-4 h-4 rounded-full border flex items-center justify-center",
+                                                isSelected ? "border-[#663820]" : "border-gray-300"
+                                            )}>
+                                                {isSelected && <div className="w-2 h-2 rounded-full bg-[#663820]" />}
+                                            </div>
+                                            <span className="font-bold text-[#212a3b]">{voice.name}</span>
+                                        </div>
+                                        <p className="text-xs text-[#777] leading-relaxed">
+                                            {voice.description}
+                                        </p>
+                                    </div>
+                                </Label>
+                            );
+                        })}
+                    </div>
+                </div>
+            </RadioGroup>
         </div>
     );
 };
